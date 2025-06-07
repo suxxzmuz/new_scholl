@@ -1,0 +1,238 @@
+<!-- 급식 -->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>School Meals</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f9f9f9;
+      color: #333;
+      padding: 2rem;
+      max-width: 600px;
+      margin: auto;
+    }
+
+    h1 {
+      font-size: 1.8rem;
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+
+    input[type="date"] {
+      padding: 0.5rem 1rem;
+      font-size: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 0.4rem;
+      margin-bottom: 2rem;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    section {
+      margin-bottom: 2rem;
+    }
+
+    h2 {
+      font-size: 1.2rem;
+      margin-bottom: 0.5rem;
+      border-bottom: 1px solid #ccc;
+      padding-bottom: 0.25rem;
+    }
+
+    ul {
+      padding-left: 1rem;
+    }
+
+    li {
+      margin-bottom: 0.3rem;
+    }
+
+    .empty {
+      color: #aaa;
+    }
+    button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #ffffff;
+      border: 2px solid #000000;
+      border-radius: 10px;
+      cursor: pointer;
+      margin: 10px;
+      margin-top: 20px;
+    }
+   .buttons {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: #f9f9f9;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    padding: 10px 0;
+    box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
+    z-index: 1000;
+  }
+
+  .buttons button {
+    margin: 0;
+  }
+  body {
+    padding-bottom: 70px; 
+  }
+
+  .allergy-info {
+  position: fixed;
+  bottom: 70px; /* 버튼 위쪽에 위치 (버튼 높이에 맞춰 조절) */
+  left: 0;
+  width: 100%;
+  font-size: 0.5rem;
+  color: #666666;
+  background: #f9f9f9;
+  text-align: center;
+  padding: 4px 10px;
+  box-shadow: 0 -1px 3px rgba(0,0,0,0.1);
+  z-index: 1000;
+  user-select: none; /* 텍스트 선택 방지 (선택해도 됨) */
+}
+
+  </style>
+</head>
+<body>
+  <h1> 🍚 오늘의 급식 </h1>
+  <input id="dateInput" type="date"/>
+
+  <section>
+    <h2>중식</h2>
+    <ul id="lunchMenu">
+      <li class="empty">중식 정보를 불러오는 중...</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>석식</h2>
+    <ul id="dinnerMenu">
+      <li class="empty">석식 정보를 불러오는 중...</li>
+    </ul>
+  </section>
+
+  <script>
+    const API_KEY = "7ce4be9cebd04ce0a048b3692a53c90f";
+    const EDU_CODE = "F10";
+    const SCHOOL_CODE = "7380182";
+
+    const dateInput = document.getElementById("dateInput");
+    const lunchMenu = document.getElementById("lunchMenu");
+    const dinnerMenu = document.getElementById("dinnerMenu");
+
+    // 알레르기 번호별 성분 매핑
+    const allergyMap = {
+      1: "난류",
+      2: "우유",
+      3: "메밀",
+      4: "땅콩",
+      5: "대두",
+      6: "밀",
+      7: "고등어",
+      8: "게",
+      9: "새우",
+      10: "돼지고기",
+      11: "복숭아",
+      12: "토마토",
+      13: "아황산류",
+      14: "호두",
+      15: "닭고기",
+      16: "쇠고기",
+      17: "오징어",
+      18: "조개류",
+      19: "잣",
+    };
+
+    // 메뉴명에서 알레르기 번호 추출 후 성분명으로 변환
+    function extractAllergyInfo(menuName) {
+      const regex = /\(([\d,]+)\)/;
+      const match = menuName.match(regex);
+      if (!match) return "";
+
+      const nums = match[1].split(",").map(n => n.trim());
+      const allergies = nums.map(n => allergyMap[n]).filter(Boolean);
+      return allergies.length ? ` (알레르기: ${allergies.join(", ")})` : "";
+    }
+
+    function formatDate(dateStr) {
+      return dateStr.replace(/-/g, "");
+    }
+
+    async function fetchMeal(date) {
+      const url = `https://open.neis.go.kr/hub/mealServiceDietInfo?KEY=${API_KEY}&Type=json&ATPT_OFCDC_SC_CODE=${EDU_CODE}&SD_SCHUL_CODE=${SCHOOL_CODE}&MLSV_YMD=${date}`;
+      try {
+        const res = await fetch(url);
+        const data = await res.json();
+
+        if (!data.mealServiceDietInfo) throw new Error("데이터 없음");
+
+        const meals = data.mealServiceDietInfo[1].row;
+        const lunch = meals.find(m => m.MMEAL_SC_NM === "중식");
+        const dinner = meals.find(m => m.MMEAL_SC_NM === "석식");
+
+        renderMenu(lunchMenu, lunch?.DDISH_NM);
+        renderMenu(dinnerMenu, dinner?.DDISH_NM);
+      } catch {
+        renderMenu(lunchMenu, null);
+        renderMenu(dinnerMenu, null);
+      }
+    }
+
+    // 기존 renderMenu 함수에 알레르기 정보 표시 기능 추가
+    function renderMenu(container, raw) {
+      container.innerHTML = "";
+      if (!raw) {
+        const li = document.createElement("li");
+        li.textContent = "급식 정보가 없습니다.";
+        li.className = "empty";
+        container.appendChild(li);
+        return;
+      }
+
+      const items = raw
+        .split("<br/>")
+        .map(item => item.trim())
+        .filter(Boolean);
+
+      for (const rawItem of items) {
+        const allergyInfo = extractAllergyInfo(rawItem);
+        const cleanName = rawItem.replace(/\([\d,]+\)/, "").trim();
+
+        const li = document.createElement("li");
+        li.textContent = cleanName + allergyInfo;
+        container.appendChild(li);
+      }
+    }
+
+    // 오늘 날짜 기본 세팅
+    const today = new Date();
+    dateInput.valueAsDate = today;
+
+    dateInput.addEventListener("change", () => {
+      fetchMeal(formatDate(dateInput.value));
+    });
+
+    fetchMeal(formatDate(dateInput.value)); // 초기 실행
+  </script>
+  <div class="allergy-info">
+   알레르기 유발 식재료 번호 : 1.난류, 2.우유, 3.메밀, 4.땅콩, 5.대두, 6.밀, 7.고등어, 8.게, 9.새우, 10.돼지고기, 
+   11.복숭아, 12.토마토, 13.아황산류, 14.호두, 15.닭고기, 16.쇠고기, 17.오징어, 18.조개류(굴, 전복, 홍합 포함), 19.잣
+   </div>
+
+  <div class="buttons">
+    <button onclick="saveTimetable()">💾 저장</button>
+    <button onclick="clearTimetable()">🔄 초기화</button>
+    <button onclick="goHome()">🏠 메인 화면으로</button>
+  </div>  
+</body>
+</html>

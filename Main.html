@@ -1,0 +1,123 @@
+<!-- 메인화면 -->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MAIN</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f3f3f3;
+      min-height: 100vh;
+    }
+
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 20px;
+      background-color: #ffffff;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    #welcome {
+      font-size: 16px;
+      color: #333;
+      margin: 0;
+    }
+
+    #logout-btn {
+      font-size: 14px;
+      padding: 6px 12px;
+      border-radius: 5px;
+      background-color: #eee;
+      border: 1px solid #ccc;
+      cursor: pointer;
+    }
+
+    .content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-top: 80px;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      color: #333;
+      margin-bottom: 40px;
+    }
+
+    .main-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    button.menu {
+      padding: 15px 30px;
+      font-size: 18px;
+      background-color: #ffffff;
+      border: 2px solid #000000;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button.menu:hover {
+      background-color: #d0e8ff;
+    }
+
+    @media screen and (max-width: 600px) {
+      h1 {
+        font-size: 1.8rem;
+      }
+
+      .main-buttons button {
+        width: 90%;
+        font-size: 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- 로그인 상태바 -->
+  <div class="top-bar">
+    <h2 id="welcome">로그인 사용자 확인 중...</h2>
+    <button id="logout-btn" onclick="logout()">🔒 로그아웃</button>
+  </div>
+
+  <!-- 메인 콘텐츠 -->
+  <div class="content">
+    <h1>📚 학사도우미 </h1>
+
+    <div class="main-buttons">
+      <button class="menu" onclick="location.href='School Timetable.html'">🗓️ 시간표 / ⏰ 시정표</button>
+      <button class="menu" onclick="location.href='Written Test Timetable.html'">📝 지필평가</button>
+      <button class="menu" onclick="location.href='Performance Assessment Schedule.html'">📅 수행평가</button>
+      <button class="menu" onclick="location.href='School Meals.html'">🍚 급식 </button>
+    </div>
+  </div>
+
+  <script>
+    window.onload = function () {
+      const user = localStorage.getItem("loggedInUser");
+      if (!user) {
+        location.href = "Login.html";
+      } else {
+        document.getElementById("welcome").innerText = `👋 ${user}님, 환영합니다!`;
+      }
+    };
+
+    function logout() {
+      if (confirm("로그아웃하시겠습니까?")) {
+        localStorage.removeItem("loggedInUser");
+        location.href = "Login.html";
+      }
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,269 @@
+<!-- 시간표 & 시정표 -->
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>School Timetable</title>
+  <style> 
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Arial', sans-serif;
+      margin: 20px;
+    }
+
+    h1 {
+      color: #333;
+      margin-top: 30px;
+      text-align: center;
+    }
+
+    .container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 20px;
+      align-items: stretch;
+    }
+
+    .timetable, .schedule {
+      flex: 1 1 300px;
+      border: 2px solid #aaa;
+      padding: 10px;
+      border-radius: 10px;
+      background-color: #fffafa;
+      display: flex;
+      flex-direction: column;
+    }
+
+    table {
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    table, td, th {
+      border: 2px solid black;
+      text-align: center;
+      padding: 8px;
+    }
+
+    td {
+      width: 120px;
+      height: 50px;
+    }
+
+    th {
+      background-color: #f7cac9;
+    }
+
+    input[type="date"],
+    input[type="text"] {
+      width: 90%;
+      padding: 5px;
+      font-size: 15px;
+      text-align: center; /* 입력된 텍스트 가운데 정렬 */
+      border: none;
+      font-size: 16px;
+      background-color: #f9f9f9;
+    }
+      button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #ffffff;
+      border: 2px solid #000000;
+      border-radius: 10px;
+      cursor: pointer;
+      margin: 10px;
+      margin-top: 20px;
+    }
+    td input[type="text"] {
+      width: 90%;
+      text-align: center;
+      font-size: 16px;
+      border: none;
+      background: transparent;
+    }
+
+    /* 반응형 스타일 */
+    @media screen and (max-width: 768px) {
+      .container {
+        flex-direction: column;
+      }
+
+      .timetable, .schedule {
+        width: 100%;
+        height: auto !important;
+      }
+    }
+     .buttons {
+    display: flex;
+    justify-content: center; /* 가로 중앙 정렬 */
+    gap: 10px; /* 버튼 사이 간격 */
+    margin-top: 20px;
+  }
+
+  .buttons button {
+    margin: 0; /* 기존 margin 대신 flex gap으로 간격 */
+  }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- 왼쪽: 시간표 -->
+<div class="schedule" id="timetable-box">
+  <h1>🗓️ 시간표</h1>
+
+  <table id="timetable">
+    <thead>
+      <tr><th>MON</th><th>TUE</th><th>WED</th><th>THU</th><th>FRI</th></tr>
+    </thead>
+    <tbody>
+      <script>
+        for (let row = 0; row < 7; row++) {
+          document.write('<tr>');
+          for (let col = 0; col < 5; col++) {
+            const id = `cell-${row}-${col}`;
+            document.write(`<td><input type="text" list="subject" id="${id}"></td>`);
+          }
+          document.write('</tr>');
+        }
+      </script>
+    </tbody>
+  </table>
+</div>
+  
+<!-- 과목 list -->
+  <datalist id="subject">
+    <option value="독서">
+    <option value="문학">
+    <option value="수학I">
+    <option value="수학II">
+    <option value="영어I">
+    <option value="영어II">
+    <option value="한국사">
+    <option value="체육">
+    <option value="확률과 통계"> 
+    <option value="기하">
+    <option value="생활과 윤리">
+    <option value="정치와 법">
+    <option value="한국지리">
+    <option value="고전과 윤리">
+    <option value="여행지리">
+    <option value="물리학I">
+    <option value="화학I">
+    <option value="생명과학I">
+    <option value="지구과학I">
+    <option value="생태와 환경">
+    <option value="정보">
+    <option value="가정과학">
+    <option value="일본어I"> 
+    <option value ="창체(진로)">
+  </datalist>
+
+    <!-- 오른쪽: 시정표 -->
+<div class="schedule" id="schedule-box">
+      <h1>⏰ 시정표</h1>
+      <table id="schedule">
+        <colgroup>
+          <col style="width: 40%;">
+          <col style="width: 60%;">
+        </colgroup>
+        <thead>
+          <tr><th>교시</th><th>시간</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>1교시</td><td>08:40 ~ 09:30</td></tr>
+          <tr><td>2교시</td><td>09:40 ~ 10:30</td></tr>
+          <tr><td>3교시</td><td>10:40 ~ 11:30</td></tr>
+          <tr><td>4교시</td><td>11:40 ~ 12:30</td></tr>
+          <tr><td>5교시</td><td>13:40 ~ 14:30</td></tr>
+          <tr><td>6교시</td><td>14:40 ~ 15:30</td></tr>
+          <tr><td>7교시</td><td>15:40 ~ 16:30</td></tr>
+        </tbody>
+      </table>
+    </div>
+  
+  <!-- 버튼 -->
+      <div class="buttons">
+        <button onclick="saveTimetable()">💾 저장</button>
+        <button onclick="clearTimetable()">🔄 초기화</button>
+        <button onclick="goHome()">🏠 메인 화면으로</button>
+      </div>  
+
+  <script>
+    // 저장 함수
+    function saveTimetable() {
+      const data = [];
+      for (let row = 0; row < 7; row++) {
+        for (let col = 0; col < 5; col++) {
+          const id = `cell-${row}-${col}`;
+          const value = document.getElementById(id).value;
+          data.push(value);
+        }
+      }
+      localStorage.setItem("timetableData", JSON.stringify(data));
+      alert("시간표가 저장되었습니다!");
+    }
+ function clearTimetable() {
+      if (confirm("정말 초기화하시겠습니까?")) {
+        for (let row = 0; row < 7; row++) {
+          for (let col = 0; col < 5; col++) {
+            const id = `cell-${row}-${col}`;
+            document.getElementById(id).value = "";
+          }
+        }
+        localStorage.removeItem("timetableData");
+        alert("시간표가 초기화되었습니다.");
+      }
+    }
+
+    // 불러오기 함수 (자동 실행)
+    window.onload = function () {
+      const saved = localStorage.getItem("timetableData");
+      if (saved) {
+        const data = JSON.parse(saved);
+        let i = 0;
+        for (let row = 0; row < 7; row++) {
+          for (let col = 0; col < 5; col++) {
+            const id = `cell-${row}-${col}`;
+            document.getElementById(id).value = data[i] || "";
+            i++;
+            
+          }
+        }
+      }
+    };
+  </script>
+   <!-- 높이 맞추기 스크립트 -->
+  <script>
+    function matchHeights() {
+      const box1 = document.getElementById("timetable-box");
+      const box2 = document.getElementById("schedule-box");
+
+      // 초기화
+      box1.style.height = "auto";
+      box2.style.height = "auto";
+
+      const h1 = box1.offsetHeight;
+      const h2 = box2.offsetHeight;
+      const max = Math.max(h1, h2);
+
+      box1.style.height = max + "px";
+      box2.style.height = max + "px";
+    }
+
+    window.addEventListener('load', matchHeights);
+    window.addEventListener('resize', matchHeights);
+  </script>
+  <script>
+  function goHome() {
+    window.location.href = 'Main.html';
+  }
+</script>
+</body>
+</html>

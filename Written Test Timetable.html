@@ -1,0 +1,258 @@
+<!-- 지필평가 시간표 -->
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Written Test Timetable</title>
+  <style> 
+    h1 {
+      color: #333;
+      margin-top: 30px;
+      text-align: center;
+    }
+    table {
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    table, td, th {
+      border: 2px solid black;
+      text-align: center;
+    }
+    td {
+      width: 120px;
+      height: 50px;
+    }
+    th {
+      background-color: #f7cac9;
+    }
+    input[type="date"],
+    input[type="text"] {
+      width: 99%;
+      padding: 5px;
+      font-size: 15px;
+      text-align: center;
+      border: none;
+      font-size: 16px;
+      background-color: #f9f9f9;
+    }
+    button {
+      margin: 10px;
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #ffffff;
+      border: 2px solid #000000;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+    .buttons {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 20px;
+      flex-wrap: wrap;
+    }
+    table.exam-table {
+      width: 100%;
+      table-layout: fixed;      /* 각 열을 균등하게 분할 */
+      border-collapse: collapse;
+    }
+
+    table.exam-table th,
+    table.exam-table td {
+      border: 1px solid #ccc;
+      padding: 10px;
+      text-align: center;
+      word-wrap: break-word;
+    }
+    @media screen and (max-width: 600px) {
+      table.exam-table td, table.exam-table th {
+        font-size: 12px;
+        padding: 5px;
+      }
+    }
+
+
+  </style>
+</head>
+<body>
+  <h1>📝 지필평가 시간표</h1>
+
+  <div id="examContainer"></div>
+
+  <div class="buttons">
+    <button onclick="addDateBlock()">➕ 날짜 추가</button>
+    <button onclick="saveExam()">💾 저장</button>
+    <button onclick="clearExam()">🔄 초기화</button>
+    <button onclick="goHome()">🏠 메인 화면으로</button>
+  </div>
+
+  <!-- 저장/불러오기 기능 -->
+
+  <script>
+    function saveExam() {
+      const rows = document.querySelectorAll("#examTable tbody tr");
+      const data = Array.from(rows).map(row =>
+        Array.from(row.querySelectorAll("input")).map(input => input.value)
+      );
+      localStorage.setItem("examSchedule", JSON.stringify(data));
+      alert("지필평가 시간표가 저장되었습니다!");
+    }
+
+    function clearExam() {
+      document.querySelectorAll("#examTable input").forEach(input => input.value = "");
+      localStorage.removeItem("examSchedule");
+    }
+
+    window.onload = function () {
+      const saved = localStorage.getItem("examSchedule");
+      if (saved) {
+        const data = JSON.parse(saved);
+        const rows = document.querySelectorAll("#examTable tbody tr");
+        data.forEach((values, i) => {
+          const inputs = rows[i].querySelectorAll("input");
+          values.forEach((val, j) => {
+            if (inputs[j]) inputs[j].value = val;
+          });
+        });
+      }
+    };
+  </script>
+  <script>
+    function goHome() {
+      window.location.href = 'Main.html';
+    }
+  </script>
+
+<!-- 과목 list -->
+  <datalist id="exam-subject">
+    <option value="독서">
+    <option value="문학">
+    <option value="수학I">
+    <option value="수학II">
+    <option value="영어I">
+    <option value="영어II">
+    <option value="한국사">
+    <option value="체육">
+    <option value="확률과 통계"> 
+    <option value="기하">
+    <option value="생활과 윤리">
+    <option value="정치와 법">
+    <option value="한국지리">
+    <option value="고전과 윤리">
+    <option value="여행지리">
+    <option value="물리학I">
+    <option value="화학I">
+    <option value="생명과학I">
+    <option value="지구과학I">
+    <option value="생태와 환경">
+    <option value="정보">
+    <option value="가정과학">
+    <option value="일본어I"> 
+  </datalist>
+
+ <script>
+    let blockCount = 0;
+
+    function createExamBlock(dateValue = "", rows = 3, subjects = []) {
+      const blockId = `exam-block-${blockCount++}`;
+      const container = document.getElementById("examContainer");
+
+      const block = document.createElement("div");
+      block.className = "exam-block";
+      block.id = blockId;
+
+block.innerHTML = `
+  <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+    <label for="exam-date-${blockId}" style="font-weight: bold;">📅 날짜:</label>
+    <input type="date" class="exam-date" id="exam-date-${blockId}" value="${dateValue}" style="flex: 1; padding: 4px 8px; font-size: 15px; box-sizing: border-box;">
+  </div>
+  <table style="width: 100%; table-layout: fixed;">
+    <colgroup>
+      <col style="width: 30%;">
+      <col style="width: 70%;">
+    </colgroup>
+    <thead>
+      <tr>
+        <th>과목</th>
+        <th>시험 범위</th>
+      </tr>
+    </thead>
+    <tbody>
+      ${Array.from({ length: rows }, (_, i) => `
+        <tr>
+          <td>
+            <input type="text" list="exam-subject" value="${subjects[i]?.subject || ""}" placeholder="과목 선택" style="width: 95%; text-align: center;">
+          </td>
+          <td>
+            <input type="text" value="${subjects[i]?.range || ""}" placeholder="시험 범위 입력" style="width: 97%;">
+          </td>
+        </tr>
+      `).join("")}
+    </tbody>
+  </table>
+  <button onclick="addExamRow('${blockId}')">➕ 시험 추가</button>
+`;
+
+      container.appendChild(block);
+    }
+
+    function addExamRow(blockId) {
+      const tbody = document.querySelector(`#${blockId} table tbody`);
+      const newRow = document.createElement("tr");
+      newRow.innerHTML = `
+        <td><input type="text" list="exam-subject" placeholder="과목 선택" style="width: 95%; text-align: center;"></td>
+        <td><input type="text" placeholder="시험 범위 입력"></td>
+      `;
+      tbody.appendChild(newRow);
+    }
+
+    function addDateBlock() {
+      createExamBlock();
+    }
+
+    function saveExam() {
+      const blocks = document.querySelectorAll(".exam-block");
+      const data = Array.from(blocks).map(block => {
+        const date = block.querySelector(".exam-date").value;
+        const rows = block.querySelectorAll("tbody tr");
+        const subjects = Array.from(rows).map(row => {
+          const inputs = row.querySelectorAll("input");
+          return {
+            subject: inputs[0].value,
+            range: inputs[1].value
+          };
+        });
+        return { date, subjects };
+      });
+
+      localStorage.setItem("examData", JSON.stringify(data));
+      alert("저장되었습니다!");
+    }
+
+    function clearExam() {
+      if (confirm("정말 초기화하시겠습니까?")) {
+        document.getElementById("examContainer").innerHTML = "";
+        localStorage.removeItem("examData");
+        // 기본 3개 다시 생성
+        for (let i = 0; i < 3; i++) createExamBlock();
+      }
+    }
+
+    // 불러오기
+    window.onload = function () {
+      const saved = localStorage.getItem("examData");
+      if (saved) {
+        const data = JSON.parse(saved);
+        data.forEach(entry => {
+          createExamBlock(entry.date, entry.subjects.length, entry.subjects);
+        });
+      } else {
+        // 처음 로드 시 3개 생성
+        for (let i = 0; i < 3; i++) createExamBlock();
+      }
+    };
+  </script>
+</body>
+</html>

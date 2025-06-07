@@ -1,0 +1,250 @@
+<!-- 수행평가 일정표 -->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Performance Assessment Schedule</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 20px;
+      text-align: center;
+    }
+
+    h1 { font-size: 24px; }
+
+    .buttons { margin: 10px 0; }
+
+    #monthYear {
+      font-size: 18px;
+      font-weight: bold;
+      margin: 0 15px;
+    }
+
+    table.calendar {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+    }
+
+    table.calendar th, table.calendar td {
+      border: 1px solid #ccc;
+      width: 14.28%;
+      height: 90px;
+      vertical-align: top;
+      position: relative;
+      padding: 5px;
+      font-size: 14px;
+    }
+
+    table.calendar th {
+      background-color: #f7cac9;
+      height: 40px;
+      vertical-align: middle;
+      text-align: center;
+    }
+
+    .dot {
+      width: 20px;
+      height: 20px;
+      background-color: red;
+      border-radius: 50%;
+      color: white;
+      font-size: 12px;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 4px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .today {
+      background-color: #cceeff;
+      border: 2px solid #66ccff;
+      font-weight: bold;
+    }
+
+    .entry-card {
+      background-color: #f9f9f9;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 12px 20px;
+      margin: 10px auto;
+      max-width: 600px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+      text-align: left;
+    }
+
+    .entry-line {
+      margin: 5px 0;
+      font-size: 15px;
+      line-height: 1.4;
+    }
+
+
+    .entry-card span {
+      display: inline-block;
+    }
+
+    button {
+      margin: 10px;
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #ffffff;
+      border: 2px solid #000000;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+  </style>
+</head>
+<body>
+  <h1>📘 수행평가 일정표</h1>
+
+  <div class="buttons">
+    <button onclick="prevMonth()">⬅ 이전 달</button>
+    <span id="monthYear"></span>
+    <button onclick="nextMonth()">다음 달 ➡</button>
+  </div>
+
+  <table class="calendar" id="calendar"></table>
+
+  <div id="evaluations"></div>
+
+  <div class="buttons">
+    <button onclick="saveData()">💾 저장</button>
+    <button onclick="clearData()">🔄 초기화</button>
+    <button onclick="goHome()">🏠 메인 화면으로</button>
+  </div>
+
+  <script>
+    let currentDate = new Date();
+    let data = {};
+
+    const subjectToEmoji = (subject) => {
+      const map = {
+        "독서": "📖", "문학": "✒", "수학I": "➗", "수학II": "✖",
+        "영어I": "🇺🇸", "영어II": "🗣", "한국사": "🏯", "체육": "🏃",
+        "확률과 통계": "📊", "기하": "📐", "생활과 윤리": "🧠",
+        "정치와 법": "⚖", "한국지리": "🗺", "고전과 윤리": "📚",
+        "여행지리": "✈️", "물리학I": "🧲", "화학I": "⚗", "생명과학I": "🧬",
+        "지구과학I": "🌍", "생태와 환경": "🌿", "정보": "💻",
+        "가정과학": "🍳", "일본어I": "🇯🇵"
+      };
+      return map[subject] || "📘";
+    };
+
+    function renderCalendar() {
+      const calendar = document.getElementById("calendar");
+      const monthYear = document.getElementById("monthYear");
+
+      const year = currentDate.getFullYear();
+      const month = currentDate.getMonth();
+
+      const today = new Date();
+      const firstDay = new Date(year, month, 1).getDay();
+      const lastDate = new Date(year, month + 1, 0).getDate();
+
+      monthYear.textContent = `${year}년 ${month + 1}월`;
+
+      let html = '<tr>';
+      const weekDays = ['일', '월', '화', '수', '목', '금', '토'];
+      weekDays.forEach(d => html += `<th>${d}</th>`);
+      html += '</tr><tr>';
+
+      for (let i = 0; i < firstDay; i++) html += '<td></td>';
+
+      for (let day = 1; day <= lastDate; day++) {
+        const fullDate = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+        const hasEval = data[fullDate];
+        const isToday =
+          day === today.getDate() &&
+          month === today.getMonth() &&
+          year === today.getFullYear();
+
+        html += `<td onclick="addEvaluation('${fullDate}')" class="${isToday ? 'today' : ''}">
+                  <div>${day}</div>
+                  ${hasEval ? `<div class="dot">${data[fullDate].length}</div>` : ''}
+                 </td>`;
+
+        if ((firstDay + day) % 7 === 0 && day !== lastDate) html += '</tr><tr>';
+      }
+
+      const remainingCells = (firstDay + lastDate) % 7;
+      if (remainingCells !== 0) {
+        for (let i = remainingCells; i < 7; i++) html += '<td></td>';
+      }
+
+      html += '</tr>';
+      calendar.innerHTML = html;
+
+      renderEvaluations();
+    }
+
+    function prevMonth() {
+      currentDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1);
+      renderCalendar();
+    }
+
+    function nextMonth() {
+      currentDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1);
+      renderCalendar();
+    }
+
+    function addEvaluation(date) {
+      const subject = prompt(`${date} 과목 입력:`);
+      if (!subject) return;
+      const content = prompt(`${date} 내용 입력:`);
+      if (!content) return;
+
+      if (!data[date]) data[date] = [];
+      data[date].push({ subject, content });
+      renderCalendar();
+    }
+
+    function renderEvaluations() {
+      const evalDiv = document.getElementById("evaluations");
+      evalDiv.innerHTML = '';
+      Object.keys(data).sort().forEach(date => {
+        data[date].forEach((item) => {
+          const emoji = subjectToEmoji(item.subject);
+          evalDiv.innerHTML += `
+            <div class="entry-card">
+              <div class="entry-line"><strong>📅 날짜:</strong> ${date}</div>
+              <div class="entry-line"><strong>${emoji} 과목:</strong> ${item.subject}</div>
+              <div class="entry-line"><strong>✏ 평가 내용:</strong> ${item.content}</div>
+            </div>
+          `;
+        });
+      });
+    }
+
+
+    function saveData() {
+      localStorage.setItem("evaluationData", JSON.stringify(data));
+      alert("저장되었습니다!");
+    }
+
+    function clearData() {
+      if (confirm("모든 데이터를 삭제하시겠습니까?")) {
+        data = {};
+        localStorage.removeItem("evaluationData");
+        renderCalendar();
+      }
+    }
+
+    function goHome() {
+      window.location.href = "Main.html";
+    }
+
+    window.onload = function () {
+      const saved = localStorage.getItem("evaluationData");
+      if (saved) data = JSON.parse(saved);
+      renderCalendar();
+    };
+  </script>
+</body>
+</html>
