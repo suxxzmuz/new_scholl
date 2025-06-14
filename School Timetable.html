@@ -1,12 +1,10 @@
-<!-- 시간표 & 시정표 -->
-
 <!DOCTYPE html>
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <title>School Timetable</title>
-  <style> 
+  <style>
     * {
       box-sizing: border-box;
     }
@@ -38,11 +36,13 @@
       background-color: #fffafa;
       display: flex;
       flex-direction: column;
+      overflow-x: auto;
     }
 
     table {
       border-collapse: collapse;
       margin-top: 20px;
+      width: 100%;
     }
 
     table, td, th {
@@ -52,7 +52,7 @@
     }
 
     td {
-      width: 120px;
+      min-width: 100px;
       height: 50px;
     }
 
@@ -64,13 +64,21 @@
     input[type="text"] {
       width: 90%;
       padding: 5px;
-      font-size: 15px;
-      text-align: center; /* 입력된 텍스트 가운데 정렬 */
-      border: none;
       font-size: 16px;
+      text-align: center;
+      border: none;
       background-color: #f9f9f9;
     }
-      button {
+
+    td input[type="text"] {
+      width: 90%;
+      font-size: 16px;
+      text-align: center;
+      border: none;
+      background: transparent;
+    }
+
+    button {
       margin-top: 20px;
       padding: 10px 20px;
       font-size: 16px;
@@ -79,157 +87,87 @@
       border-radius: 10px;
       cursor: pointer;
       margin: 10px;
-      margin-top: 20px;
-    }
-    td input[type="text"] {
-      width: 90%;
-      text-align: center;
-      font-size: 16px;
-      border: none;
-      background: transparent;
     }
 
-    /* 반응형 스타일 */
+    .buttons {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 20px;
+      flex-wrap: wrap;
+    }
+
     @media screen and (max-width: 768px) {
       .container {
         flex-direction: column;
       }
 
-      .timetable, .schedule {
+      .schedule {
         width: 100%;
-        height: auto !important;
+        overflow-x: auto;
+      }
+
+      .schedule table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+      }
+
+      table td, table th {
+        min-width: 100px;
+        font-size: 3.5vw;
+        padding: 6px;
+      }
+
+      .schedule input[type="text"] {
+        font-size: 3.5vw;
+        padding: 4px;
+      }
+
+      h1 {
+        font-size: 1.8rem;
+      }
+
+      body {
+        padding: 10px;
+        font-size: 14px;
+      }
+
+      button {
+        font-size: 14px;
+        padding: 8px 16px;
       }
     }
-     .buttons {
-    display: flex;
-    justify-content: center; /* 가로 중앙 정렬 */
-    gap: 10px; /* 버튼 사이 간격 */
-    margin-top: 20px;
-  }
-
-  .buttons button {
-    margin: 0; /* 기존 margin 대신 flex gap으로 간격 */
-  }
-  
-  @media screen and (max-width: 600px) {
-  body {
-    padding: 10px;
-    font-size: 14px;
-  }
-
-  h1 {
-    font-size: 1.8rem;
-    text-align: center;
-  }
-
-  .main-buttons {
-    flex-direction: column;
-    width: 100%;
-    gap: 15px;
-    align-items: stretch;
-  }
-
-  .main-buttons button {
-    width: 100%;
-    font-size: 16px;
-    padding: 12px;
-  }
-
-  .top-bar {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 5px;
-  }
-
-  #logout-btn {
-    align-self: flex-end;
-    font-size: 14px;
-    padding: 6px 12px;
-    margin-top: 5px;
-  }
-
-  #welcome {
-    font-size: 16px;
-    text-align: left;
-  }
-
-  input[type="text"],
-  input[type="date"] {
-    font-size: 14px;
-    padding: 6px;
-  }
-
-  table td, table th {
-    font-size: 12px;
-    padding: 6px;
-  }
-}
-
   </style>
 </head>
 <body>
   <div class="container">
-    <!-- 왼쪽: 시간표 -->
-<div class="schedule" id="timetable-box">
-  <h1>🗓️ 시간표</h1>
+    <!-- 시간표 -->
+    <div class="schedule" id="timetable-box">
+      <h1>🗓️ 시간표</h1>
+      <table id="timetable">
+        <thead>
+          <tr><th>MON</th><th>TUE</th><th>WED</th><th>THU</th><th>FRI</th></tr>
+        </thead>
+        <tbody>
+          <script>
+            for (let row = 0; row < 7; row++) {
+              document.write('<tr>');
+              for (let col = 0; col < 5; col++) {
+                const id = `cell-${row}-${col}`;
+                document.write(`<td><input type="text" list="subject" id="${id}"></td>`);
+              }
+              document.write('</tr>');
+            }
+          </script>
+        </tbody>
+      </table>
+    </div>
 
-  <table id="timetable">
-    <thead>
-      <tr><th>MON</th><th>TUE</th><th>WED</th><th>THU</th><th>FRI</th></tr>
-    </thead>
-    <tbody>
-      <script>
-        for (let row = 0; row < 7; row++) {
-          document.write('<tr>');
-          for (let col = 0; col < 5; col++) {
-            const id = `cell-${row}-${col}`;
-            document.write(`<td><input type="text" list="subject" id="${id}"></td>`);
-          }
-          document.write('</tr>');
-        }
-      </script>
-    </tbody>
-  </table>
-</div>
-  
-<!-- 과목 list -->
-  <datalist id="subject">
-    <option value="독서">
-    <option value="문학">
-    <option value="수학I">
-    <option value="수학II">
-    <option value="영어I">
-    <option value="영어II">
-    <option value="한국사">
-    <option value="체육">
-    <option value="확률과 통계"> 
-    <option value="기하">
-    <option value="생활과 윤리">
-    <option value="정치와 법">
-    <option value="한국지리">
-    <option value="고전과 윤리">
-    <option value="여행지리">
-    <option value="물리학I">
-    <option value="화학I">
-    <option value="생명과학I">
-    <option value="지구과학I">
-    <option value="생태와 환경">
-    <option value="정보">
-    <option value="가정과학">
-    <option value="일본어I"> 
-    <option value ="창체(진로)">
-    <option value ="동아리">
-    <option value ="공강">
-  </datalist>
-
-    <!-- 오른쪽: 시정표 -->
-<div class="schedule" id="schedule-box">
+    <!-- 시정표 -->
+    <div class="schedule" id="schedule-box">
       <h1>⏰ 시정표</h1>
       <table id="schedule">
-        <colgroup>
-          <col style="width: 40%;">
-          <col style="width: 60%;">
-        </colgroup>
         <thead>
           <tr><th>교시</th><th>시간</th></tr>
         </thead>
@@ -244,16 +182,46 @@
         </tbody>
       </table>
     </div>
-  
+  </div>
+
   <!-- 버튼 -->
-      <div class="buttons">
-        <button onclick="saveTimetable()">💾 저장</button>
-        <button onclick="clearTimetable()">🔄 초기화</button>
-        <button onclick="goHome()">🏠 메인 화면으로</button>
-      </div>  
+  <div class="buttons">
+    <button onclick="saveTimetable()">💾 저장</button>
+    <button onclick="clearTimetable()">🔄 초기화</button>
+    <button onclick="goHome()">🏠 메인 화면으로</button>
+  </div>
+
+  <!-- 과목 리스트 -->
+  <datalist id="subject">
+    <option value="독서">
+    <option value="문학">
+    <option value="수학I">
+    <option value="수학II">
+    <option value="영어I">
+    <option value="영어II">
+    <option value="한국사">
+    <option value="체육">
+    <option value="확률과 통계">
+    <option value="기하">
+    <option value="생활과 윤리">
+    <option value="정치와 법">
+    <option value="한국지리">
+    <option value="고전과 윤리">
+    <option value="여행지리">
+    <option value="물리학I">
+    <option value="화학I">
+    <option value="생명과학I">
+    <option value="지구과학I">
+    <option value="생태와 환경">
+    <option value="정보">
+    <option value="가정과학">
+    <option value="일본어I">
+    <option value ="창체(진로)">
+    <option value ="동아리">
+    <option value ="공강">
+  </datalist>
 
   <script>
-    // 저장 함수
     function saveTimetable() {
       const data = [];
       for (let row = 0; row < 7; row++) {
@@ -264,9 +232,17 @@
         }
       }
       localStorage.setItem("timetableData", JSON.stringify(data));
+
+      const times = {};
+      for (let i = 1; i <= 7; i++) {
+        times[`period-${i}`] = document.getElementById(`period-${i}`).value;
+      }
+      localStorage.setItem("scheduleTimes", JSON.stringify(times));
+
       alert("저장되었습니다!");
     }
- function clearTimetable() {
+
+    function clearTimetable() {
       if (confirm("정말 초기화하시겠습니까?")) {
         for (let row = 0; row < 7; row++) {
           for (let col = 0; col < 5; col++) {
@@ -275,11 +251,38 @@
           }
         }
         localStorage.removeItem("timetableData");
+
+        resetSchedule();
+
         alert("초기화되었습니다.");
       }
     }
 
-    // 불러오기 함수 (자동 실행)
+    function resetSchedule() {
+      const defaults = [
+        "08:40 ~ 09:30", "09:40 ~ 10:30", "10:40 ~ 11:30",
+        "11:40 ~ 12:30", "13:40 ~ 14:30", "14:40 ~ 15:30", "15:40 ~ 16:30"
+      ];
+      for (let i = 1; i <= 7; i++) {
+        document.getElementById(`period-${i}`).value = defaults[i - 1];
+      }
+      localStorage.removeItem("scheduleTimes");
+    }
+
+    function loadSchedule() {
+      const saved = JSON.parse(localStorage.getItem("scheduleTimes"));
+      if (saved) {
+        for (let i = 1; i <= 7; i++) {
+          const val = saved[`period-${i}`];
+          if (val) document.getElementById(`period-${i}`).value = val;
+        }
+      }
+    }
+
+    function goHome() {
+      window.location.href = 'index.html';
+    }
+
     window.onload = function () {
       const saved = localStorage.getItem("timetableData");
       if (saved) {
@@ -290,127 +293,12 @@
             const id = `cell-${row}-${col}`;
             document.getElementById(id).value = data[i] || "";
             i++;
-            
           }
         }
       }
+
+      loadSchedule();
     };
   </script>
-   <!-- 높이 맞추기 스크립트 -->
-  <script>
-    function matchHeights() {
-      const box1 = document.getElementById("timetable-box");
-      const box2 = document.getElementById("schedule-box");
-
-      // 초기화
-      box1.style.height = "auto";
-      box2.style.height = "auto";
-
-      const h1 = box1.offsetHeight;
-      const h2 = box2.offsetHeight;
-      const max = Math.max(h1, h2);
-
-      box1.style.height = max + "px";
-      box2.style.height = max + "px";
-    }
-
-    window.addEventListener('load', matchHeights);
-    window.addEventListener('resize', matchHeights);
-  </script>
-  <script>
-  function goHome() {
-    window.location.href = 'index.html';
-  }
-
-  // 시정표 저장
-  function saveSchedule() {
-    const times = {};
-    for (let i = 1; i <= 7; i++) {
-      times[`period-${i}`] = document.getElementById(`period-${i}`).value;
-    }
-    localStorage.setItem("scheduleTimes", JSON.stringify(times));
-  }
-
-  // 시정표 초기화
-  function resetSchedule() {
-    const defaults = [
-      "08:40 ~ 09:30", "09:40 ~ 10:30", "10:40 ~ 11:30",
-      "11:40 ~ 12:30", "13:40 ~ 14:30", "14:40 ~ 15:30", "15:40 ~ 16:30"
-    ];
-    for (let i = 1; i <= 7; i++) {
-      document.getElementById(`period-${i}`).value = defaults[i - 1];
-    }
-    localStorage.removeItem("scheduleTimes");
-  }
-
-  // 시정표 불러오기
-  function loadSchedule() {
-    const saved = JSON.parse(localStorage.getItem("scheduleTimes"));
-    if (saved) {
-      for (let i = 1; i <= 7; i++) {
-        const val = saved[`period-${i}`];
-        if (val) document.getElementById(`period-${i}`).value = val;
-      }
-    }
-  }
-
-  // 페이지 로딩 시 시간표 + 시정표 모두 불러오기
-  window.onload = function () {
-    // 시간표 불러오기
-    const saved = localStorage.getItem("timetableData");
-    if (saved) {
-      const data = JSON.parse(saved);
-      let i = 0;
-      for (let row = 0; row < 7; row++) {
-        for (let col = 0; col < 5; col++) {
-          const id = `cell-${row}-${col}`;
-          document.getElementById(id).value = data[i] || "";
-          i++;
-        }
-      }
-    }
-
-    // 시정표 불러오기
-    loadSchedule();
-  };
-
-  // 기존 저장 버튼과 연결
-  function saveTimetable() {
-    // 시간표 저장
-    const data = [];
-    for (let row = 0; row < 7; row++) {
-      for (let col = 0; col < 5; col++) {
-        const id = `cell-${row}-${col}`;
-        const value = document.getElementById(id).value;
-        data.push(value);
-      }
-    }
-    localStorage.setItem("timetableData", JSON.stringify(data));
-
-    // 시정표도 같이 저장
-    saveSchedule();
-
-    alert("저장되었습니다!");
-  }
-
-  function clearTimetable() {
-    if (confirm("정말 초기화하시겠습니까?")) {
-      // 시간표 초기화
-      
-      for (let row = 0; row < 7; row++) {
-        for (let col = 0; col < 5; col++) {
-          const id = `cell-${row}-${col}`;
-          document.getElementById(id).value = "";
-        }
-      }
-      localStorage.removeItem("timetableData");
-
-      // 시정표 초기화
-      resetSchedule();
-
-      alert("초기화되었습니다.");
-    }
-  }
-</script>
 </body>
 </html>
