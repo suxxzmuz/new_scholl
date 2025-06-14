@@ -70,17 +70,61 @@
     button.menu:hover {
       background-color: #d0e8ff;
     }
-
+    
     @media screen and (max-width: 600px) {
-      h1 {
-        font-size: 1.8rem;
-      }
+  body {
+    padding: 10px;
+    font-size: 14px;
+  }
 
-      .main-buttons button {
-        width: 90%;
-        font-size: 16px;
-      }
-    }
+  h1 {
+    font-size: 1.8rem;
+    text-align: center;
+  }
+
+  .main-buttons {
+    flex-direction: column;
+    width: 100%;
+    gap: 15px;
+    align-items: stretch;
+  }
+
+  .main-buttons button {
+    width: 100%;
+    font-size: 16px;
+    padding: 12px;
+  }
+
+  .top-bar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 5px;
+  }
+
+  #logout-btn {
+    align-self: flex-end;
+    font-size: 14px;
+    padding: 6px 12px;
+    margin-top: 5px;
+  }
+
+  #welcome {
+    font-size: 16px;
+    text-align: left;
+  }
+
+  input[type="text"],
+  input[type="date"] {
+    font-size: 14px;
+    padding: 6px;
+  }
+
+  table td, table th {
+    font-size: 12px;
+    padding: 6px;
+  }
+}
+
   </style>
 </head>
 <body>

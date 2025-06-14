@@ -110,6 +110,61 @@
   .buttons button {
     margin: 0; /* 기존 margin 대신 flex gap으로 간격 */
   }
+  
+  @media screen and (max-width: 600px) {
+  body {
+    padding: 10px;
+    font-size: 14px;
+  }
+
+  h1 {
+    font-size: 1.8rem;
+    text-align: center;
+  }
+
+  .main-buttons {
+    flex-direction: column;
+    width: 100%;
+    gap: 15px;
+    align-items: stretch;
+  }
+
+  .main-buttons button {
+    width: 100%;
+    font-size: 16px;
+    padding: 12px;
+  }
+
+  .top-bar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 5px;
+  }
+
+  #logout-btn {
+    align-self: flex-end;
+    font-size: 14px;
+    padding: 6px 12px;
+    margin-top: 5px;
+  }
+
+  #welcome {
+    font-size: 16px;
+    text-align: left;
+  }
+
+  input[type="text"],
+  input[type="date"] {
+    font-size: 14px;
+    padding: 6px;
+  }
+
+  table td, table th {
+    font-size: 12px;
+    padding: 6px;
+  }
+}
+
   </style>
 </head>
 <body>
@@ -163,6 +218,8 @@
     <option value="가정과학">
     <option value="일본어I"> 
     <option value ="창체(진로)">
+    <option value ="동아리">
+    <option value ="공강">
   </datalist>
 
     <!-- 오른쪽: 시정표 -->
@@ -177,13 +234,13 @@
           <tr><th>교시</th><th>시간</th></tr>
         </thead>
         <tbody>
-          <tr><td>1교시</td><td>08:40 ~ 09:30</td></tr>
-          <tr><td>2교시</td><td>09:40 ~ 10:30</td></tr>
-          <tr><td>3교시</td><td>10:40 ~ 11:30</td></tr>
-          <tr><td>4교시</td><td>11:40 ~ 12:30</td></tr>
-          <tr><td>5교시</td><td>13:40 ~ 14:30</td></tr>
-          <tr><td>6교시</td><td>14:40 ~ 15:30</td></tr>
-          <tr><td>7교시</td><td>15:40 ~ 16:30</td></tr>
+          <tr><td>1교시</td><td><input type="text" id="period-1" value="08:40 ~ 09:30"></td></tr>
+          <tr><td>2교시</td><td><input type="text" id="period-2" value="09:40 ~ 10:30"></td></tr>
+          <tr><td>3교시</td><td><input type="text" id="period-3" value="10:40 ~ 11:30"></td></tr>
+          <tr><td>4교시</td><td><input type="text" id="period-4" value="11:40 ~ 12:30"></td></tr>
+          <tr><td>5교시</td><td><input type="text" id="period-5" value="13:40 ~ 14:30"></td></tr>
+          <tr><td>6교시</td><td><input type="text" id="period-6" value="14:40 ~ 15:30"></td></tr>
+          <tr><td>7교시</td><td><input type="text" id="period-7" value="15:40 ~ 16:30"></td></tr>
         </tbody>
       </table>
     </div>
@@ -207,7 +264,7 @@
         }
       }
       localStorage.setItem("timetableData", JSON.stringify(data));
-      alert("시간표가 저장되었습니다!");
+      alert("저장되었습니다!");
     }
  function clearTimetable() {
       if (confirm("정말 초기화하시겠습니까?")) {
@@ -218,7 +275,7 @@
           }
         }
         localStorage.removeItem("timetableData");
-        alert("시간표가 초기화되었습니다.");
+        alert("초기화되었습니다.");
       }
     }
 
@@ -263,6 +320,95 @@
   <script>
   function goHome() {
     window.location.href = 'Main.html';
+  }
+
+  // 시정표 저장
+  function saveSchedule() {
+    const times = {};
+    for (let i = 1; i <= 7; i++) {
+      times[`period-${i}`] = document.getElementById(`period-${i}`).value;
+    }
+    localStorage.setItem("scheduleTimes", JSON.stringify(times));
+  }
+
+  // 시정표 초기화
+  function resetSchedule() {
+    const defaults = [
+      "08:40 ~ 09:30", "09:40 ~ 10:30", "10:40 ~ 11:30",
+      "11:40 ~ 12:30", "13:40 ~ 14:30", "14:40 ~ 15:30", "15:40 ~ 16:30"
+    ];
+    for (let i = 1; i <= 7; i++) {
+      document.getElementById(`period-${i}`).value = defaults[i - 1];
+    }
+    localStorage.removeItem("scheduleTimes");
+  }
+
+  // 시정표 불러오기
+  function loadSchedule() {
+    const saved = JSON.parse(localStorage.getItem("scheduleTimes"));
+    if (saved) {
+      for (let i = 1; i <= 7; i++) {
+        const val = saved[`period-${i}`];
+        if (val) document.getElementById(`period-${i}`).value = val;
+      }
+    }
+  }
+
+  // 페이지 로딩 시 시간표 + 시정표 모두 불러오기
+  window.onload = function () {
+    // 시간표 불러오기
+    const saved = localStorage.getItem("timetableData");
+    if (saved) {
+      const data = JSON.parse(saved);
+      let i = 0;
+      for (let row = 0; row < 7; row++) {
+        for (let col = 0; col < 5; col++) {
+          const id = `cell-${row}-${col}`;
+          document.getElementById(id).value = data[i] || "";
+          i++;
+        }
+      }
+    }
+
+    // 시정표 불러오기
+    loadSchedule();
+  };
+
+  // 기존 저장 버튼과 연결
+  function saveTimetable() {
+    // 시간표 저장
+    const data = [];
+    for (let row = 0; row < 7; row++) {
+      for (let col = 0; col < 5; col++) {
+        const id = `cell-${row}-${col}`;
+        const value = document.getElementById(id).value;
+        data.push(value);
+      }
+    }
+    localStorage.setItem("timetableData", JSON.stringify(data));
+
+    // 시정표도 같이 저장
+    saveSchedule();
+
+    alert("저장되었습니다!");
+  }
+
+  function clearTimetable() {
+    if (confirm("정말 초기화하시겠습니까?")) {
+      // 시간표 초기화
+      for (let row = 0; row < 7; row++) {
+        for (let col = 0; col < 5; col++) {
+          const id = `cell-${row}-${col}`;
+          document.getElementById(id).value = "";
+        }
+      }
+      localStorage.removeItem("timetableData");
+
+      // 시정표 초기화
+      resetSchedule();
+
+      alert("초기화되었습니다.");
+    }
   }
 </script>
 </body>
