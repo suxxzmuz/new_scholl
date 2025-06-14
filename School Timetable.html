@@ -319,7 +319,7 @@
   </script>
   <script>
   function goHome() {
-    window.location.href = 'Main.html';
+    window.location.href = 'index.html';
   }
 
   // 시정표 저장
@@ -396,6 +396,7 @@
   function clearTimetable() {
     if (confirm("정말 초기화하시겠습니까?")) {
       // 시간표 초기화
+      
       for (let row = 0; row < 7; row++) {
         for (let col = 0; col < 5; col++) {
           const id = `cell-${row}-${col}`;
