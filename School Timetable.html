@@ -3,177 +3,173 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SCHOOL TIMETABLE</title>
+  <title>학교 시간표</title>
   <style>
     * {
       box-sizing: border-box;
     }
 
-    html, body {
+    body {
+      font-family: 'Arial', sans-serif;
       margin: 0;
       padding: 0;
-      font-family: 'Arial', sans-serif;
-      height: 100%;
       background-color: #fff;
-    }
-
-    .container {
-      padding: 10px;
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-      max-width: 100%;
     }
 
     h1 {
       text-align: center;
-      font-size: 24px;
-      margin-bottom: 10px;
+      margin: 20px 0;
+      font-size: 1.8rem;
+      color: #333;
     }
 
-    .box {
-      background-color: #fffafa;
-      border: 2px solid #aaa;
-      border-radius: 20px;
-      padding: 10px;
+    .section {
       width: 100%;
-      overflow-x: auto;
+      padding: 0 10px;
     }
 
     table {
-      border-collapse: collapse;
       width: 100%;
-      min-width: 500px;
+      border-collapse: collapse;
+      margin-top: 10px;
     }
 
-    th, td {
-      border: 1.5px solid #000;
-      padding: 8px;
-      text-align: center;
-      font-size: 14px;
+    table, th, td {
+      border: 2px solid #000;
     }
 
     th {
       background-color: #f7cac9;
+      padding: 8px;
+      font-size: 1rem;
     }
 
+    td {
+      padding: 4px;
+      height: 50px;
+    }
+
+    td input[type="text"] {
+      width: 100%;
+      padding: 6px;
+      font-size: 0.9rem;
+      border: none;
+      text-align: center;
+      background: transparent;
+    }
+
+    input[type="date"],
     input[type="text"] {
       width: 100%;
-      border: none;
-      background: transparent;
-      font-size: 14px;
+      padding: 6px;
+      font-size: 0.9rem;
       text-align: center;
-    }
-
-    input[type="text"]:focus {
-      outline: none;
+      background-color: #f9f9f9;
     }
 
     .buttons {
       display: flex;
-      justify-content: space-around;
-      margin-top: 20px;
-      padding: 0 10px;
+      justify-content: center;
+      gap: 10px;
+      margin: 30px 0;
+      flex-wrap: wrap;
     }
 
     .buttons button {
-      padding: 10px 20px;
-      font-size: 16px;
-      border: 2px solid black;
-      background-color: white;
-      border-radius: 10px;
+      padding: 12px 20px;
+      font-size: 1rem;
+      border: 2px solid #000;
+      background-color: #fff;
+      border-radius: 8px;
       cursor: pointer;
-      flex: 1;
-      margin: 0 5px;
     }
 
+    /* 반응형 스타일 */
     @media screen and (max-width: 600px) {
-      th, td {
-        font-size: 12px;
+      h1 {
+        font-size: 1.5rem;
+      }
+
+      table th, table td {
+        font-size: 0.8rem;
         padding: 6px;
       }
 
-      input[type="text"] {
-        font-size: 12px;
+      td input[type="text"] {
+        font-size: 0.85rem;
       }
 
       .buttons button {
-        font-size: 14px;
-        padding: 8px;
+        width: 100%;
       }
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    
-    <!-- 시간표 -->
-    <div class="box" id="timetable-box">
-      <h1>🗓️ 시간표</h1>
-      <table id="timetable">
-        <thead>
-          <tr>
-            <th>MON</th><th>TUE</th><th>WED</th><th>THU</th><th>FRI</th>
-          </tr>
-        </thead>
-        <tbody>
-          <script>
-            for (let row = 0; row < 7; row++) {
-              document.write('<tr>');
-              for (let col = 0; col < 5; col++) {
-                const id = `cell-${row}-${col}`;
-                document.write(`<td><input type="text" list="subject" id="${id}"></td>`);
-              }
-              document.write('</tr>');
+
+  <!-- 시간표 -->
+  <div class="section" id="timetable-box">
+    <h1>🗓️ 시간표</h1>
+    <table id="timetable">
+      <thead>
+        <tr><th>MON</th><th>TUE</th><th>WED</th><th>THU</th><th>FRI</th></tr>
+      </thead>
+      <tbody>
+        <script>
+          for (let row = 0; row < 7; row++) {
+            document.write('<tr>');
+            for (let col = 0; col < 5; col++) {
+              const id = `cell-${row}-${col}`;
+              document.write(`<td><input type="text" list="subject" id="${id}"></td>`);
             }
-          </script>
-        </tbody>
-      </table>
-    </div>
-
-    <!-- 시정표 -->
-    <div class="box" id="schedule-box">
-      <h1>⏰ 시정표</h1>
-      <table>
-        <thead>
-          <tr><th>교시</th><th>시간</th></tr>
-        </thead>
-        <tbody>
-          <script>
-            const defaultTimes = [
-              "08:40 ~ 09:30", "09:40 ~ 10:30", "10:40 ~ 11:30",
-              "11:40 ~ 12:30", "13:40 ~ 14:30", "14:40 ~ 15:30", "15:40 ~ 16:30"
-            ];
-            for (let i = 1; i <= 7; i++) {
-              document.write(`<tr><td>${i}교시</td><td><input type="text" id="period-${i}" value="${defaultTimes[i-1]}"></td></tr>`);
-            }
-          </script>
-        </tbody>
-      </table>
-    </div>
-
-    <!-- 버튼 -->
-    <div class="buttons">
-      <button onclick="saveAll()">💾 저장</button>
-      <button onclick="resetAll()">🔄 초기화</button>
-      <button onclick="location.href='index.html'">🏠 메인 화면으로</button>
-    </div>
-
-    <!-- 과목 리스트 -->
-    <datalist id="subject">
-      <option value="독서"><option value="문학"><option value="수학I"><option value="수학II">
-      <option value="영어I"><option value="영어II"><option value="한국사"><option value="체육">
-      <option value="확률과 통계"><option value="기하"><option value="생활과 윤리"><option value="정치와 법">
-      <option value="한국지리"><option value="고전과 윤리"><option value="여행지리"><option value="물리학I">
-      <option value="화학I"><option value="생명과학I"><option value="지구과학I"><option value="생태와 환경">
-      <option value="정보"><option value="가정과학"><option value="일본어I"><option value="창체(진로)">
-      <option value="동아리"><option value="공강">
-    </datalist>
+            document.write('</tr>');
+          }
+        </script>
+      </tbody>
+    </table>
   </div>
 
+  <!-- 과목 리스트 -->
+  <datalist id="subject">
+    <option value="독서"><option value="문학"><option value="수학I"><option value="수학II">
+    <option value="영어I"><option value="영어II"><option value="한국사"><option value="체육">
+    <option value="확률과 통계"><option value="기하"><option value="생활과 윤리"><option value="정치와 법">
+    <option value="한국지리"><option value="고전과 윤리"><option value="여행지리"><option value="물리학I">
+    <option value="화학I"><option value="생명과학I"><option value="지구과학I"><option value="생태와 환경">
+    <option value="정보"><option value="가정과학"><option value="일본어I"><option value="창체(진로)">
+    <option value="동아리"><option value="공강">
+  </datalist>
+
+  <!-- 시정표 -->
+  <div class="section" id="schedule-box">
+    <h1>⏰ 시정표</h1>
+    <table id="schedule">
+      <thead>
+        <tr><th>교시</th><th>시간</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>1교시</td><td><input type="text" id="period-1" value="08:40 ~ 09:30"></td></tr>
+        <tr><td>2교시</td><td><input type="text" id="period-2" value="09:40 ~ 10:30"></td></tr>
+        <tr><td>3교시</td><td><input type="text" id="period-3" value="10:40 ~ 11:30"></td></tr>
+        <tr><td>4교시</td><td><input type="text" id="period-4" value="11:40 ~ 12:30"></td></tr>
+        <tr><td>5교시</td><td><input type="text" id="period-5" value="13:40 ~ 14:30"></td></tr>
+        <tr><td>6교시</td><td><input type="text" id="period-6" value="14:40 ~ 15:30"></td></tr>
+        <tr><td>7교시</td><td><input type="text" id="period-7" value="15:40 ~ 16:30"></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 버튼 -->
+  <div class="buttons">
+    <button onclick="saveAll()">💾 저장</button>
+    <button onclick="clearAll()">🔄 초기화</button>
+    <button onclick="goHome()">🏠 메인 화면으로</button>
+  </div>
+
+  <!-- 스크립트 -->
   <script>
-    function saveAll() {
-      // 시간표 저장
+    // 시간표 저장
+    function saveTimetable() {
       const data = [];
       for (let row = 0; row < 7; row++) {
         for (let col = 0; col < 5; col++) {
@@ -182,59 +178,67 @@
         }
       }
       localStorage.setItem("timetableData", JSON.stringify(data));
+    }
 
-      // 시정표 저장
-      const times = {};
+    // 시정표 저장
+    function saveSchedule() {
+      const data = {};
       for (let i = 1; i <= 7; i++) {
-        times[`period-${i}`] = document.getElementById(`period-${i}`).value;
+        data[`period-${i}`] = document.getElementById(`period-${i}`).value;
       }
-      localStorage.setItem("scheduleTimes", JSON.stringify(times));
+      localStorage.setItem("scheduleData", JSON.stringify(data));
+    }
 
+    // 저장 버튼
+    function saveAll() {
+      saveTimetable();
+      saveSchedule();
       alert("저장되었습니다!");
     }
 
-    function resetAll() {
-      if (!confirm("정말 초기화하시겠습니까?")) return;
-
-      // 시간표 초기화
-      for (let row = 0; row < 7; row++) {
-        for (let col = 0; col < 5; col++) {
-          document.getElementById(`cell-${row}-${col}`).value = "";
+    // 초기화
+    function clearAll() {
+      if (confirm("정말 초기화하시겠습니까?")) {
+        for (let row = 0; row < 7; row++) {
+          for (let col = 0; col < 5; col++) {
+            document.getElementById(`cell-${row}-${col}`).value = "";
+          }
         }
+        for (let i = 1; i <= 7; i++) {
+          document.getElementById(`period-${i}`).value = "";
+        }
+        localStorage.removeItem("timetableData");
+        localStorage.removeItem("scheduleData");
+        alert("초기화되었습니다.");
       }
-      localStorage.removeItem("timetableData");
-
-      // 시정표 초기화
-      const defaults = [
-        "08:40 ~ 09:30", "09:40 ~ 10:30", "10:40 ~ 11:30",
-        "11:40 ~ 12:30", "13:40 ~ 14:30", "14:40 ~ 15:30", "15:40 ~ 16:30"
-      ];
-      for (let i = 1; i <= 7; i++) {
-        document.getElementById(`period-${i}`).value = defaults[i - 1];
-      }
-      localStorage.removeItem("scheduleTimes");
-
-      alert("초기화되었습니다.");
     }
 
-    // 로딩 시 데이터 불러오기
-    window.onload = () => {
-      const saved = JSON.parse(localStorage.getItem("timetableData") || "[]");
+    // 로드
+    function loadAll() {
+      const tData = JSON.parse(localStorage.getItem("timetableData") || "[]");
+      const sData = JSON.parse(localStorage.getItem("scheduleData") || "{}");
+
       let i = 0;
       for (let row = 0; row < 7; row++) {
         for (let col = 0; col < 5; col++) {
-          document.getElementById(`cell-${row}-${col}`).value = saved[i] || "";
-          i++;
+          const id = `cell-${row}-${col}`;
+          document.getElementById(id).value = tData[i++] || "";
         }
       }
 
-      const savedSchedule = JSON.parse(localStorage.getItem("scheduleTimes") || "{}");
       for (let i = 1; i <= 7; i++) {
-        if (savedSchedule[`period-${i}`]) {
-          document.getElementById(`period-${i}`).value = savedSchedule[`period-${i}`];
-        }
+        const val = sData[`period-${i}`];
+        if (val) document.getElementById(`period-${i}`).value = val;
       }
-    };
+    }
+
+    // 메인으로 이동
+    function goHome() {
+      window.location.href = "index.html";
+    }
+
+    window.onload = loadAll;
   </script>
+
 </body>
 </html>
