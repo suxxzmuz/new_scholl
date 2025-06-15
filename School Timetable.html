@@ -47,23 +47,28 @@
 
     td {
       padding: 4px;
-      height: 60px;
+      min-height: 60px;
       text-align: center;
       vertical-align: middle;
       overflow-wrap: break-word;
       word-break: break-word;
+      white-space: normal;
     }
 
     td input[type="text"] {
       width: 100%;
+      font-size: 0.8rem;
       padding: 6px;
-      font-size: 0.9rem;
       border: none;
       text-align: center;
       background: transparent;
       white-space: normal;
       word-break: break-word;
+      overflow-wrap: break-word;
+      line-height: 1.2;
+      max-height: 2.4em; /* 2줄까지 표시 */
     }
+
 
     input[type="date"],
     input[type="text"] {
