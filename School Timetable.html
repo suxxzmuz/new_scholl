@@ -32,6 +32,7 @@
       width: 100%;
       border-collapse: collapse;
       margin-top: 10px;
+      table-layout: fixed;
     }
 
     table, th, td {
@@ -42,38 +43,28 @@
       background-color: #f7cac9;
       padding: 8px;
       font-size: 1rem;
-      text-align: center;
     }
 
     td {
+      height: 50px;
       padding: 4px;
-      min-height: 60px;
-      text-align: center;
-      vertical-align: middle;
-      overflow-wrap: break-word;
-      word-break: break-word;
-      white-space: normal;
     }
 
     td input[type="text"] {
       width: 100%;
-      font-size: 0.8rem;
       padding: 6px;
-      border: none;
+      font-size: 1rem;
       text-align: center;
+      border: none;
       background: transparent;
-      white-space: normal;
-      word-break: break-word;
-      overflow-wrap: break-word;
-      line-height: 1.2;
-      max-height: 2.4em; /* 2줄까지 표시 */
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      transition: font-size 0.2s;
     }
-
 
     input[type="date"],
     input[type="text"] {
-      width: 100%;
-      padding: 6px;
       font-size: 0.9rem;
       text-align: center;
       background-color: #f9f9f9;
@@ -96,16 +87,7 @@
       cursor: pointer;
     }
 
-    /* 시정표 열 너비 고정 */
-    #schedule col:nth-child(1) {
-      width: 30%;
-    }
-
-    #schedule col:nth-child(2) {
-      width: 70%;
-    }
-
-    /* 모바일 최적화 */
+    /* 반응형 스타일 */
     @media screen and (max-width: 600px) {
       h1 {
         font-size: 1.5rem;
@@ -117,14 +99,7 @@
       }
 
       td input[type="text"] {
-        font-size: 0.8rem;
-        padding: 4px;
-      }
-
-      .buttons {
-        flex-direction: column;
-        align-items: stretch;
-        gap: 10px;
+        font-size: 0.85rem;
       }
 
       .buttons button {
@@ -148,7 +123,7 @@
             document.write('<tr>');
             for (let col = 0; col < 5; col++) {
               const id = `cell-${row}-${col}`;
-              document.write(`<td><input type="text" list="subject" id="${id}"></td>`);
+              document.write(`<td><input type="text" list="subject" id="${id}" oninput="adjustFontSize(this)"></td>`);
             }
             document.write('</tr>');
           }
@@ -172,10 +147,6 @@
   <div class="section" id="schedule-box">
     <h1>⏰ 시정표</h1>
     <table id="schedule">
-      <colgroup>
-        <col>
-        <col>
-      </colgroup>
       <thead>
         <tr><th>교시</th><th>시간</th></tr>
       </thead>
@@ -200,6 +171,15 @@
 
   <!-- 스크립트 -->
   <script>
+    function adjustFontSize(input) {
+      const length = input.value.length;
+      if (length > 6) {
+        input.style.fontSize = "0.75rem";
+      } else {
+        input.style.fontSize = "1rem";
+      }
+    }
+
     function saveTimetable() {
       const data = [];
       for (let row = 0; row < 7; row++) {
@@ -249,7 +229,9 @@
       for (let row = 0; row < 7; row++) {
         for (let col = 0; col < 5; col++) {
           const id = `cell-${row}-${col}`;
-          document.getElementById(id).value = tData[i++] || "";
+          const input = document.getElementById(id);
+          input.value = tData[i++] || "";
+          adjustFontSize(input);
         }
       }
 
