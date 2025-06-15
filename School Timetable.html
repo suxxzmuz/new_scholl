@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>학교 시간표</title>
+  <title>School Timetable</title>
   <style>
     * {
       box-sizing: border-box;
@@ -42,11 +42,16 @@
       background-color: #f7cac9;
       padding: 8px;
       font-size: 1rem;
+      text-align: center;
     }
 
     td {
       padding: 4px;
-      height: 50px;
+      height: 60px;
+      text-align: center;
+      vertical-align: middle;
+      overflow-wrap: break-word;
+      word-break: break-word;
     }
 
     td input[type="text"] {
@@ -56,6 +61,8 @@
       border: none;
       text-align: center;
       background: transparent;
+      white-space: normal;
+      word-break: break-word;
     }
 
     input[type="date"],
@@ -84,7 +91,16 @@
       cursor: pointer;
     }
 
-    /* 반응형 스타일 */
+    /* 시정표 열 너비 고정 */
+    #schedule col:nth-child(1) {
+      width: 30%;
+    }
+
+    #schedule col:nth-child(2) {
+      width: 70%;
+    }
+
+    /* 모바일 최적화 */
     @media screen and (max-width: 600px) {
       h1 {
         font-size: 1.5rem;
@@ -96,7 +112,14 @@
       }
 
       td input[type="text"] {
-        font-size: 0.85rem;
+        font-size: 0.8rem;
+        padding: 4px;
+      }
+
+      .buttons {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
       }
 
       .buttons button {
@@ -144,6 +167,10 @@
   <div class="section" id="schedule-box">
     <h1>⏰ 시정표</h1>
     <table id="schedule">
+      <colgroup>
+        <col>
+        <col>
+      </colgroup>
       <thead>
         <tr><th>교시</th><th>시간</th></tr>
       </thead>
@@ -168,7 +195,6 @@
 
   <!-- 스크립트 -->
   <script>
-    // 시간표 저장
     function saveTimetable() {
       const data = [];
       for (let row = 0; row < 7; row++) {
@@ -180,7 +206,6 @@
       localStorage.setItem("timetableData", JSON.stringify(data));
     }
 
-    // 시정표 저장
     function saveSchedule() {
       const data = {};
       for (let i = 1; i <= 7; i++) {
@@ -189,14 +214,12 @@
       localStorage.setItem("scheduleData", JSON.stringify(data));
     }
 
-    // 저장 버튼
     function saveAll() {
       saveTimetable();
       saveSchedule();
       alert("저장되었습니다!");
     }
 
-    // 초기화
     function clearAll() {
       if (confirm("정말 초기화하시겠습니까?")) {
         for (let row = 0; row < 7; row++) {
@@ -213,7 +236,6 @@
       }
     }
 
-    // 로드
     function loadAll() {
       const tData = JSON.parse(localStorage.getItem("timetableData") || "[]");
       const sData = JSON.parse(localStorage.getItem("scheduleData") || "{}");
@@ -232,7 +254,6 @@
       }
     }
 
-    // 메인으로 이동
     function goHome() {
       window.location.href = "index.html";
     }
