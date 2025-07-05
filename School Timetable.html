@@ -1,3 +1,11 @@
+<!-- 시간표 & 시정표 -->
+
+<!-- 
+버튼 크기 축소 후 한줄 정리 필요 
+시간표 및 시정표 UI 디자인 수정 필요 
+알람 기능 및 알림 발송 시간 설정 필요 
+-->
+
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -9,134 +17,130 @@
       box-sizing: border-box;
     }
 
-    body {
-      font-family: 'Arial', sans-serif;
-      margin: 0;
-      padding: 0;
-      background-color: #fff;
+body {
+  font-family: 'Arial', sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #ffffff; /* 전체 배경 흰색 */
+  color: #333;
+}
+
+/* 카드 박스 디자인 */
+.card-box {
+  background: linear-gradient(135deg, #f0f8ff, #e6f2ff); /* 연한 하늘색 그라데이션 */
+  border-radius: 16px;
+  padding: 20px;
+  margin: 20px 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+/* 제목 스타일 */
+h1 {
+  text-align: center;
+  margin: 20px 0;
+  font-size: 1.8rem;
+  color: #333;
+}
+
+/* 테이블 스타일 */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+table, th, td {
+  border: 2px solid #000;
+}
+
+th {
+  background-color: #d4e9ff;
+  padding: 8px;
+  font-size: 1rem;
+  text-align: center;
+}
+
+td {
+  padding: 4px;
+  min-height: 60px;
+  text-align: center;
+  vertical-align: middle;
+  overflow-wrap: break-word;
+  word-break: break-word;
+  white-space: normal;
+}
+
+td input[type="text"] {
+  width: 100%;
+  font-size: 0.8rem;
+  padding: 6px;
+  border: none;
+  text-align: center;
+  background: transparent;
+  white-space: normal;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  line-height: 1.2;
+  max-height: 2.4em;
+}
+
+input[type="date"],
+input[type="text"] {
+  width: 100%;
+  padding: 6px;
+  font-size: 0.9rem;
+  text-align: center;
+  background-color: #f5faff;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+/* 버튼 영역 */
+.buttons {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin: 30px 0;
+  flex-wrap: wrap;
+}
+
+.buttons button {
+  padding: 12px 20px;
+  font-size: 1rem;
+  border: 2px solid #000;
+  background-color: #e0f2ff;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.buttons button:hover {
+  background-color: #cce6ff;
+}
+
+/* 시정표 열 너비 고정 */
+#schedule col:nth-child(1) {
+  width: 30%;
+}
+
+#schedule col:nth-child(2) {
+  width: 70%;
+}
+
+    #pp{
+      position:absolute;
+      left:35%;
+    
+      max-width: 600px;
     }
-
-    h1 {
-      text-align: center;
-      margin: 20px 0;
-      font-size: 1.8rem;
-      color: #333;
-    }
-
-    .section {
-      width: 100%;
-      padding: 0 10px;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 10px;
-    }
-
-    table, th, td {
-      border: 2px solid #000;
-    }
-
-    th {
-      background-color: #f7cac9;
-      padding: 8px;
-      font-size: 1rem;
-      text-align: center;
-    }
-
-    td {
-      padding: 4px;
-      min-height: 60px;
-      text-align: center;
-      vertical-align: middle;
-      overflow-wrap: break-word;
-      word-break: break-word;
-      white-space: normal;
-    }
-
-    td input[type="text"] {
-      width: 100%;
-      font-size: 0.8rem;
-      padding: 6px;
-      border: none;
-      text-align: center;
-      background: transparent;
-      white-space: normal;
-      word-break: break-word;
-      overflow-wrap: break-word;
-      line-height: 1.2;
-      max-height: 2.4em; /* 2줄까지 표시 */
-    }
-
-
-    input[type="date"],
-    input[type="text"] {
-      width: 100%;
-      padding: 6px;
-      font-size: 0.9rem;
-      text-align: center;
-      background-color: #f9f9f9;
-    }
-
-    .buttons {
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-      margin: 30px 0;
-      flex-wrap: wrap;
-    }
-
-    .buttons button {
-      padding: 12px 20px;
-      font-size: 1rem;
-      border: 2px solid #000;
-      background-color: #fff;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-
-    /* 시정표 열 너비 고정 */
-    #schedule col:nth-child(1) {
-      width: 30%;
-    }
-
-    #schedule col:nth-child(2) {
-      width: 70%;
-    }
-
-    /* 모바일 최적화 */
-    @media screen and (max-width: 600px) {
-      h1 {
-        font-size: 1.5rem;
-      }
-
-      table th, table td {
-        font-size: 0.8rem;
-        padding: 6px;
-      }
-
-      td input[type="text"] {
-        font-size: 0.8rem;
-        padding: 4px;
-      }
-
-      .buttons {
-        flex-direction: column;
-        align-items: stretch;
-        gap: 10px;
-      }
-
-      .buttons button {
-        width: 100%;
-      }
-    }
+    
   </style>
 </head>
 <body>
-
+  <div id="pp">
   <!-- 시간표 -->
   <div class="section" id="timetable-box">
+  <div class="section card-box" id="timetable-box"></div>
     <h1>🗓️ 시간표</h1>
     <table id="timetable">
       <thead>
@@ -197,7 +201,7 @@
     <button onclick="clearAll()">🔄 초기화</button>
     <button onclick="goHome()">🏠 메인 화면으로</button>
   </div>
-
+</div>
   <!-- 스크립트 -->
   <script>
     function saveTimetable() {

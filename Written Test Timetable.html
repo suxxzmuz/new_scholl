@@ -7,45 +7,104 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Written Test Timetable</title>
   <style> 
+    
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Arial', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #ffffff;
+      color: #333;
+    }
+
+ /* 전체 박스 스타일 */
+    #pp {
+      position: absolute;
+      left: 35%;
+      max-width: 600px;
+      width: 100%;
+    }
+
+    .card-box {
+      background: linear-gradient(135deg, #f0f8ff, #e6f2ff);
+      border-radius: 16px;
+      padding: 20px;
+      margin: 20px 0;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
+
     h1 {
       color: #333;
       margin-top: 30px;
       text-align: center;
     }
+
     table {
+      width: 100%;
       border-collapse: collapse;
+      table-layout: fixed;
       margin-top: 20px;
     }
+
     table, td, th {
       border: 2px solid black;
       text-align: center;
     }
+
     td {
       width: 120px;
       height: 50px;
+      text-align: center;
+      vertical-align: middle;
+      word-break: break-word;
     }
+
     th {
-      background-color: #f7cac9;
+      background-color: #d4e9ff;
+      padding: 8px;
+      font-size: 1rem;
+      text-align: center;
     }
+
     input[type="date"],
     input[type="text"] {
-      width: 99%;
+      width: 100%;
       padding: 5px;
       font-size: 15px;
       text-align: center;
       border: none;
       font-size: 16px;
-      background-color: #f9f9f9;
+      background-color: #f5faff;
     }
+
+    td input[type="text"] {
+      width: 100%;
+      font-size: 0.9rem;
+      padding: 6px;
+      border: none;
+      background: transparent;
+      text-align: center;
+      line-height: 1.2;
+      max-height: 2.4em;
+      word-break: break-word;
+      white-space: normal;
+      overflow-wrap: break-word;
+    }
+
     button {
       margin: 10px;
       padding: 10px 20px;
-      font-size: 16px;
-      background-color: #ffffff;
-      border: 2px solid #000000;
+      font-size: 14px;
+      background-color: #e0f2ff;
+      border: 2px solid #000;
       border-radius: 10px;
       cursor: pointer;
+      transition: background-color 0.3s ease;
     }
+
     .buttons {
       display: flex;
       justify-content: center;
@@ -53,6 +112,11 @@
       margin-top: 20px;
       flex-wrap: wrap;
     }
+
+ button:hover {
+      background-color: #cce6ff;
+    }
+
     table.exam-table {
       width: 100%;
       table-layout: fixed;      /* 각 열을 균등하게 분할 */
@@ -66,70 +130,12 @@
       text-align: center;
       word-wrap: break-word;
     }
-    @media screen and (max-width: 600px) {
-      table.exam-table td, table.exam-table th {
-        font-size: 12px;
-        padding: 5px;
-      }
-    }
-
-@media screen and (max-width: 600px) {
-  body {
-    padding: 10px;
-    font-size: 14px;
-  }
-
-  h1 {
-    font-size: 1.8rem;
-    text-align: center;
-  }
-
-  .main-buttons {
-    flex-direction: column;
-    width: 100%;
-    gap: 15px;
-    align-items: stretch;
-  }
-
-  .main-buttons button {
-    width: 100%;
-    font-size: 16px;
-    padding: 12px;
-  }
-
-  .top-bar {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 5px;
-  }
-
-  #logout-btn {
-    align-self: flex-end;
-    font-size: 14px;
-    padding: 6px 12px;
-    margin-top: 5px;
-  }
-
-  #welcome {
-    font-size: 16px;
-    text-align: left;
-  }
-
-  input[type="text"],
-  input[type="date"] {
-    font-size: 14px;
-    padding: 6px;
-  }
-
-  table td, table th {
-    font-size: 12px;
-    padding: 6px;
-  }
-}
-
+    
   </style>
 </head>
 <body>
+  <div id = 'pp'>
+  <div class="section card-box" id="timetable-box"></div>
   <h1>📝 지필평가 시간표</h1>
 
   <div id="examContainer"></div>

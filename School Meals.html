@@ -1,4 +1,10 @@
 <!-- 급식 -->
+
+<!-- 
+UI 디자인 수정 필요
+12시 되면 자동으로 다음 날짜로 넘어가도록 설정 
+-->
+
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -6,6 +12,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>School Meals</title>
   <style>
+     * {
+      box-sizing: border-box;
+    }
+    
     body {
       font-family: 'Segoe UI', sans-serif;
       background: #f9f9f9;
@@ -15,6 +25,14 @@
       margin: auto;
     }
 
+    .card-box {
+      background: linear-gradient(135deg, #f0f8ff, #e6f2ff);
+      border-radius: 16px;
+      padding: 20px;
+      margin: 20px 0;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
+
     h1 {
       font-size: 1.8rem;
       margin-bottom: 1rem;
@@ -22,18 +40,34 @@
     }
 
     input[type="date"] {
-      padding: 0.5rem 1rem;
-      font-size: 1rem;
-      border: 1px solid #ccc;
-      border-radius: 0.4rem;
-      margin-bottom: 2rem;
+      appearance: none; /* 브라우저 기본 스타일 제거 */
+      padding: 10px 20px;
+      font-size: 16px;
+      border: 2px solid #000;
+      border-radius: 10px;
+      background-color: #e0f2ff;
+      color: #333;
+      text-align: center;
+      cursor: pointer;
+      margin-bottom: 2.5rem;
       display: block;
       margin-left: auto;
       margin-right: auto;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    }
+
+    input[type="date"]::-webkit-calendar-picker-indicator {
+      filter: invert(0.4);
+      cursor: pointer;
     }
 
     section {
+      background-color: #f0f8ff; /* 연한 하늘색 (식단 표 느낌) */
+      border: 1px solid #cce5ff;
+      border-radius: 10px;
+      padding: 1rem;
       margin-bottom: 2rem;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.03);
     }
 
     h2 {
@@ -41,6 +75,7 @@
       margin-bottom: 0.5rem;
       border-bottom: 1px solid #ccc;
       padding-bottom: 0.25rem;
+      color: #1a4e8a;
     }
 
     ul {
@@ -54,17 +89,19 @@
     .empty {
       color: #aaa;
     }
+
     button {
       margin-top: 20px;
       padding: 10px 20px;
       font-size: 16px;
-      background-color: #ffffff;
-      border: 2px solid #000000;
+      border: 2px solid #000;
+      background-color: #e0f2ff;
       border-radius: 10px;
       cursor: pointer;
       margin: 10px;
       margin-top: 20px;
     }
+
    .buttons {
     position: fixed;
     bottom: 0;
@@ -100,76 +137,22 @@
   z-index: 1000;
   user-select: none; /* 텍스트 선택 방지 (선택해도 됨) */
 }
-
-@media screen and (max-width: 600px) {
-  body {
-    padding: 10px;
-    font-size: 14px;
-  }
-
-  h1 {
-    font-size: 1.8rem;
-    text-align: center;
-  }
-
-  .main-buttons {
-    flex-direction: column;
-    width: 100%;
-    gap: 15px;
-    align-items: stretch;
-  }
-
-  .main-buttons button {
-    width: 100%;
-    font-size: 16px;
-    padding: 12px;
-  }
-
-  .top-bar {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 5px;
-  }
-
-  #logout-btn {
-    align-self: flex-end;
-    font-size: 14px;
-    padding: 6px 12px;
-    margin-top: 5px;
-  }
-
-  #welcome {
-    font-size: 16px;
-    text-align: left;
-  }
-
-  input[type="text"],
-  input[type="date"] {
-    font-size: 14px;
-    padding: 6px;
-  }
-
-  table td, table th {
-    font-size: 12px;
-    padding: 6px;
-  }
-}
-
   </style>
 </head>
 <body>
+  <div class="section card-box" id="timetable-box"></div>
   <h1> 🍚 오늘의 급식 </h1>
   <input id="dateInput" type="date"/>
 
   <section>
-    <h2>중식</h2>
+    <h2>🍱 중식</h2>
     <ul id="lunchMenu">
       <li class="empty">중식 정보를 불러오는 중...</li>
     </ul>
   </section>
 
   <section>
-    <h2>석식</h2>
+    <h2>🍛 석식</h2>
     <ul id="dinnerMenu">
       <li class="empty">석식 정보를 불러오는 중...</li>
     </ul>
